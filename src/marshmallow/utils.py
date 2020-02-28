@@ -21,12 +21,15 @@ RAISE = "raise"
 class _Missing:
     def __bool__(self):
         return False
+        # [z]: A missing value should always be evaluated as False.
 
     def __copy__(self):
         return self
+        # [z]: Returns self to ensure singleton.
 
     def __deepcopy__(self, _):
         return self
+        # [z]: Returns self to ensure singleton.
 
     def __repr__(self):
         return "<marshmallow.missing>"
@@ -47,6 +50,7 @@ def is_generator(obj) -> bool:
 def is_iterable_but_not_string(obj) -> bool:
     """Return True if ``obj`` is an iterable object that isn't a string."""
     return (hasattr(obj, "__iter__") and not hasattr(obj, "strip")) or is_generator(obj)
+    # [z?]: Why use `strip` to check for string?
 
 
 def is_collection(obj) -> bool:
