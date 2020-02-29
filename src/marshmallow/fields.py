@@ -193,6 +193,9 @@ class Field(FieldABC):
         messages = {}  # type: typing.Dict[str, str]
         for cls in reversed(self.__class__.__mro__):
             messages.update(getattr(cls, "default_error_messages", {}))
+        # [z]: `mro` stands for Method Resolution Order.
+        #      It returns a list of types the class is derived from,
+        #      in the order they are searched for methods.
         messages.update(error_messages or {})
         self.error_messages = messages
 
@@ -210,6 +213,7 @@ class Field(FieldABC):
 
     def __deepcopy__(self, memo):
         return copy.copy(self)
+        # [z?]: copy.copy() is a shallow copy. Why turn deepcopy into a shallow one?
 
     def get_value(self, obj, attr, accessor=None, default=missing_):
         """Return the value for a given key from an object.
@@ -826,6 +830,7 @@ class String(Field):
             return utils.ensure_text_type(value)
         except UnicodeDecodeError as error:
             raise self.make_error("invalid_utf8") from error
+            # [z]: raise ... from, exception chaining
 
 
 class UUID(String):
